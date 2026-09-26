@@ -115,6 +115,10 @@ public class GeneralConfigManager {
 			ExploreCompact, ExploreSaveIntoDatabase = false, DBCleaningJobsUse, DBCleaningUsersUse, DisabledWorldsUse, UseAsWhiteListWorldList, MythicMobsEnabled, LoggingUse, payForCombiningItems, payForStackedEntities, payForAbove = false,
 			payForEachVTradeItem, allowEnchantingBoostedItems, preventShopItemEnchanting, useCustomFishingOnly = false, boostPersistenceEnabled = true;
 	public MessageToggleState BossBarsMessageDefault = MessageToggleState.Rapid;
+	public boolean BoostBarEnabled, BoostBarShowAll, BoostBarCountdown;
+	public String BoostBarTitle, BoostBarFormat, BoostBarSeparator, BoostBarForever;
+	public org.bukkit.boss.BarColor BoostBarColor = org.bukkit.boss.BarColor.YELLOW;
+	public org.bukkit.boss.BarStyle BoostBarStyle = org.bukkit.boss.BarStyle.SOLID;
 	public MessageToggleState ActionBarsMessageDefault = MessageToggleState.Rapid;
 	public MessageToggleState ChatTextMessageDefault = MessageToggleState.Batched;
 
@@ -960,6 +964,23 @@ public class GeneralConfigManager {
 			BossBarTimer = c.get("BossBar.Timer", 5);
 		}
 
+		c.addComment("BoostBar.Enabled", "Shows a bossbar with the running boost of a job (from /jobs boost or a schedule) and how long it has left");
+		BoostBarEnabled = c.get("BoostBar.Enabled", true);
+		c.addComment("BoostBar.Title", "Text of the bar. Placeholders: %job%, %boosts%, %time%. Supports & and &#RRGGBB colors");
+		BoostBarTitle = c.get("BoostBar.Title", "&6&l%job% boost &f%boosts% &7- &e%time% left");
+		c.addComment("BoostBar.Format", "How one boosted currency is written in %boosts%. Placeholders: %currency%, %multiplier% (1.5 for +50%), %percent% (50 for +50%)");
+		BoostBarFormat = c.get("BoostBar.Format", "&a%currency% x%multiplier%");
+		BoostBarSeparator = c.get("BoostBar.Separator", "&7, ");
+		BoostBarForever = c.get("BoostBar.NoEnd", "no end");
+		c.addComment("BoostBar.Color", "Valid options: BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW");
+		BoostBarColor = parseEnum(org.bukkit.boss.BarColor.class, c.get("BoostBar.Color", "YELLOW"), org.bukkit.boss.BarColor.YELLOW);
+		c.addComment("BoostBar.Style", "Valid options: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20");
+		BoostBarStyle = parseEnum(org.bukkit.boss.BarStyle.class, c.get("BoostBar.Style", "SOLID"), org.bukkit.boss.BarStyle.SOLID);
+		c.addComment("BoostBar.Countdown", "The bar empties as the boost runs out. When false it stays full");
+		BoostBarCountdown = c.get("BoostBar.Countdown", true);
+		c.addComment("BoostBar.ShowToAll", "false shows the bar only to players who have that job, true shows it to everyone online");
+		BoostBarShowAll = c.get("BoostBar.ShowToAll", false);
+
 		c.addComment("ShowActionBars", "You can enable/disable message shown for players in action bar");
 		TitleChangeActionBar = c.get("ShowActionBars.OnTitleChange", true);
 		LevelChangeActionBar = c.get("ShowActionBars.OnLevelChange", true);
@@ -1249,5 +1270,13 @@ public class GeneralConfigManager {
 
 	public boolean isDailyQuestsUseGUI() {
 		return DailyQuestsUseGUI;
+	}
+
+	private static <T extends Enum<T>> T parseEnum(Class<T> type, String value, T fallback) {
+		try {
+			return Enum.valueOf(type, value.trim().toUpperCase());
+		} catch (IllegalArgumentException e) {
+			return fallback;
+		}
 	}
 }

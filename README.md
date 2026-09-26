@@ -145,3 +145,8 @@ For API events: https://github.com/Zrips/Jobs/wiki/API
 - Current development: [Zrips](https://www.spigotmc.org/resources/authors/zrips.24572/)
 - Contributions: https://github.com/Zrips/Jobs/graphs/contributors
 
+
+## Cozy changes
+
+- **Boost bossbar.** When a job has a running boost, from `/jobs boost` or from `schedule.yml`, players in that job see a bossbar with the boosted currencies and the time left. The `BoostBar` section of `generalConfig.yml` sets the text, the colour, the style, whether the bar empties as time runs out and whether everyone sees it or only players with that job. `BoostBar.Enabled: false` turns it off. Boosts from a schedule show the time until the schedule ends.
+- **EvenMoreFish.** The plugin already pays for EvenMoreFish catches. Add an `EvenMoreFish:` section to a job file, with rarity ids (`common`, `rare`, ...) or `rarity:fish` as the keys, and `income`, `points` and `experience` under each.

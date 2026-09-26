@@ -147,6 +147,7 @@ public final class Jobs extends JavaPlugin {
     private static RestrictedBlockManager rbManager;
     private static RestrictedAreaManager raManager;
     private static BossBarManager bbManager;
+    private static com.gamingmesh.jobs.config.BoostBarManager boostBar;
     private static ShopManager shopManager;
     private static Loging loging;
     @Deprecated
@@ -798,6 +799,7 @@ public final class Jobs extends JavaPlugin {
             new YmlMaker(getFolder(), "restrictedBlocks.yml").saveDefaultConfig();
 
             bbManager = new BossBarManager(this);
+            boostBar = new com.gamingmesh.jobs.config.BoostBarManager(this);
 
             Optional.ofNullable(getCommand("jobs")).ifPresent(j -> {
                 j.setExecutor(getCommandManager());
@@ -979,6 +981,9 @@ public final class Jobs extends JavaPlugin {
             }
         } else
             getScheduleManager().cancel();
+
+        if (boostBar != null)
+            boostBar.start();
     }
 
     @Override
@@ -986,6 +991,9 @@ public final class Jobs extends JavaPlugin {
 
         CMIMessages.consoleMessage(prefix);
         HandlerList.unregisterAll(this);
+
+        if (boostBar != null)
+            boostBar.stop();
 
         if (dao != null && Jobs.getGeneralConfigManager().ExploreSaveIntoDatabase)
             dao.saveExplore();
